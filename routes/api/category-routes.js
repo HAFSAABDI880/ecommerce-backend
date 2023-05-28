@@ -1,12 +1,18 @@
-const { Router } = require("express");
+const router = require("express").Router();
 
 const { Category, Product } = require("../../models");
 
-const router = Router();
 //get all categories
 router.get("/", async (req, res) => {
   try {
-    const getAllCategories = await Category.findAll();
+    const getAllCategories = await Category.findAll({
+      include: [
+        {
+          model: Product,
+          attributes: ["id", "product_name", "price", "stock", "category_id"],
+        },
+      ],
+    });
     res.status(200).json(getAllCategories);
   } catch (err) {
     res.status(500).json(err);
